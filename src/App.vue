@@ -20,9 +20,13 @@
           <div class="bg-col">
             <h2>To do</h2>
             <ul>
-              <draggable class="list-group" :list="todos" group="todos">
+              <draggable
+                class="list-group"
+                :list="allTodos[0].todos"
+                group="todos"
+              >
                 <li
-                  v-for="item in todos"
+                  v-for="item in allTodos[0].todos"
                   :key="item.id"
                   class="font-weight-bold"
                 >
@@ -36,9 +40,13 @@
           <div class="bg-col">
             <h2>In progress</h2>
             <ul>
-              <draggable class="list-group" :list="inProgress" group="todos">
+              <draggable
+                class="list-group"
+                :list="allTodos[0].inProgress"
+                group="todos"
+              >
                 <li
-                  v-for="item in inProgress"
+                  v-for="item in allTodos[0].inProgress"
                   :key="item.id"
                   class="font-weight-bold"
                 >
@@ -52,9 +60,13 @@
           <div class="bg-col">
             <h2>Done</h2>
             <ul>
-              <draggable class="list-group" :list="done" group="todos">
+              <draggable
+                class="list-group"
+                :list="allTodos[0].done"
+                group="todos"
+              >
                 <li
-                  v-for="item in done"
+                  v-for="item in allTodos[0].done"
                   :key="item.id"
                   class="font-weight-bold"
                 >
@@ -82,22 +94,11 @@ export default {
     return {
       createTodo: false,
       todo: "",
-      todos: [
+      allTodos: [
         {
-          title: "todo",
-          id: uuidv4(),
-        },
-      ],
-      inProgress: [
-        {
-          title: "progress",
-          id: uuidv4(),
-        },
-      ],
-      done: [
-        {
-          title: "done",
-          id: uuidv4(),
+          todos: [{}],
+          inProgress: [],
+          done: [],
         },
       ],
     };
@@ -105,13 +106,23 @@ export default {
   methods: {
     handleOk() {
       if (this.todo.trim() !== "") {
-        this.todos.push({
+        this.allTodos[0].todos.push({
           title: this.todo,
           id: uuidv4(),
         });
       }
       this.todo = "";
     },
+  },
+  updated() {
+    localStorage.setItem("todos", JSON.stringify(this.allTodos));
+  },
+  created() {
+    const todosFromStorage = localStorage.getItem("todos");
+    if (todosFromStorage) {
+      this.allTodos = JSON.parse(todosFromStorage);
+    }
+    // console.log(this.allTodos[0]);
   },
 };
 </script>
@@ -161,5 +172,15 @@ ul li {
   border: 1px solid #000;
   border-radius: 5px;
   background: #fff;
+  position: relative;
+}
+
+ul li .delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+  background: crimson;
+  border-radius: 5px;
+  color: #fff;
 }
 </style>
