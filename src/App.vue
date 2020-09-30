@@ -16,7 +16,7 @@
     <div class="container">
       <h1 class="my-4">TODO APP</h1>
       <div class="row justify-content-between">
-        <div class="col-xl">
+        <div class="col">
           <div class="bg-col">
             <h2>To do</h2>
             <ul>
@@ -31,12 +31,18 @@
                   class="font-weight-bold"
                 >
                   {{ item.title }}
+                  <button
+                    @click="deleteTodo(item, 'todos')"
+                    class="btn btn-danger"
+                  >
+                    X
+                  </button>
                 </li>
               </draggable>
             </ul>
           </div>
         </div>
-        <div class="col-xl">
+        <div class="col">
           <div class="bg-col">
             <h2>In progress</h2>
             <ul>
@@ -51,12 +57,18 @@
                   class="font-weight-bold"
                 >
                   {{ item.title }}
+                  <button
+                    @click="deleteTodo(item, 'inProgress')"
+                    class="btn btn-danger"
+                  >
+                    X
+                  </button>
                 </li>
               </draggable>
             </ul>
           </div>
         </div>
-        <div class="col-xl">
+        <div class="col">
           <div class="bg-col">
             <h2>Done</h2>
             <ul>
@@ -71,6 +83,12 @@
                   class="font-weight-bold"
                 >
                   {{ item.title }}
+                  <button
+                    @click="deleteTodo(item, 'done')"
+                    class="btn btn-danger"
+                  >
+                    X
+                  </button>
                 </li>
               </draggable>
             </ul>
@@ -96,7 +114,7 @@ export default {
       todo: "",
       allTodos: [
         {
-          todos: [{}],
+          todos: [],
           inProgress: [],
           done: [],
         },
@@ -113,6 +131,12 @@ export default {
       }
       this.todo = "";
     },
+    deleteTodo(item, category) {
+      const filter = this.allTodos[0][category].filter(
+        (todo) => todo.id !== item.id
+      );
+      this.allTodos[0][category] = filter;
+    },
   },
   updated() {
     localStorage.setItem("todos", JSON.stringify(this.allTodos));
@@ -122,7 +146,6 @@ export default {
     if (todosFromStorage) {
       this.allTodos = JSON.parse(todosFromStorage);
     }
-    // console.log(this.allTodos[0]);
   },
 };
 </script>
@@ -175,12 +198,9 @@ ul li {
   position: relative;
 }
 
-ul li .delete-btn {
+ul li .btn-danger {
   position: absolute;
-  top: 8px;
-  right: 15px;
-  background: crimson;
-  border-radius: 5px;
-  color: #fff;
+  top: 3px;
+  right: 5px;
 }
 </style>
